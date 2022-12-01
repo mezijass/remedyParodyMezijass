@@ -84,7 +84,6 @@
                                 <input type="hidden" class="form-control editform_{{$d->id}}" style="" value="{{$d->updated_at}}">
                             </td>
                             <td>
-
                                 <button type="submit" class="btn btn-success">Сохранить</button>
                             </td>
                         </tr>
