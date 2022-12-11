@@ -8,6 +8,7 @@
 @php
 $header = \App\Models\incident::find(request("id"));
 $status = \App\Models\statuses::find($header->status)->name;
+$group = \App\Models\incident_groups::find($header->group_view)->name;
 $user = \App\Models\User::find($header->user)->name;
 $description = $header->description;
 @endphp
@@ -19,6 +20,7 @@ $description = $header->description;
                     <div class="card-header">{{ $header->header }}</div>
                     <div class="card-body text-primary">
                         <h5 class="card-title">Статус инцидента: <b>{{ $status  }}</b></h5>
+                        <h5 class="card-title">Назначен команде: <b>{{ $group }}</b></h5>
                         <h5 class="card-title">Текущий исполнитель: <b>{{ $user  }}</b></h5>
                         <p class="card-text">{{$description}}</p>
                     </div>

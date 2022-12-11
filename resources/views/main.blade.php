@@ -29,7 +29,7 @@
                         <th scope="col">Заголовок</th>
                         <th scope="col">Описание</th>
                         <th scope="col">Тип</th>
-                        <th scope="col">Укрупнённая категория</th>
+                        <th scope="col">Назначенная команда</th>
                         <th scope="col">Статус</th>
                         <th scope="col">Текущий исполнитель</th>
                         <th scope="col">Создан</th>

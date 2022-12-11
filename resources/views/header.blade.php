@@ -66,7 +66,7 @@
                     <li class="nav-item">
                         <!-- Button trigger modal -->
                         <a  class="btn btn-primary" style="margin-left: 7px;" href="/user_groups">
-                            Пользовательские группы
+                            Редактировать команды
                         </a>
                     </li>
 
@@ -126,7 +126,7 @@
                         <option value="Единичный">Единичный</option>
                     </select>
                     <br>
-                    <label class="form-label" for="type">Укрупнённая группа инцидента</label>
+                    <label class="form-label" for="type">Назначить команде</label>
                     <select id="group_view" name="group_view" class="form-control" required>
                         @foreach($data_types as $d)
                             <option value="{{$d->id}}">{{$d->name}}</option>

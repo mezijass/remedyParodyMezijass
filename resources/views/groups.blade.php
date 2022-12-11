@@ -13,7 +13,7 @@
                         {{--Имя в селекторе если он уже выбран--}}
                         <option>{{\App\Models\User::find(request('id'))->name}}</option>
                     @else
-                        <option>Выберите пользователя для назначения категорий</option>
+                        <option>Выберите пользователя для редактирования команд</option>
                     @endif
                     @foreach(\App\Models\User::all() as $user)
                         <option value="user_groups?id={{$user->id}}">{{$user->name}}</option>
@@ -23,11 +23,11 @@
                 <br>
                 @if(request("id"))
 
-                    <h4 style="text-align: center">Список категорий инцидентов для пользователя:</h4>
+                    <h4 style="text-align: center">Список команд, в которые входит пользователь:</h4>
                     <table class="table table-secondary">
                         <thead>
                         <tr>
-                            <th scope="col">Категория</th>
+                            <th scope="col">Название команды</th>
                             <th scope="col">Доступ</th>
                         </tr>
                         </thead>
