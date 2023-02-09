@@ -6,6 +6,7 @@
 $header = \App\Models\incident::find(request("id"));
 $created_by = \App\Models\User::find($header->created_by)->name;
 $status = \App\Models\statuses::find($header->status)->name;
+$type = $header->type;
 $group = \App\Models\incident_groups::find($header->group_view)->name;
 $user = \App\Models\User::find($header->user)->name;
 $description = $header->description;
@@ -32,6 +33,15 @@ $current_inc_id = $header->id;
 
             <!-- Поле заголовок инцидента -->
             <div class="card-body text-primary">
+
+                    <!-- поле статус инцидента -->
+                    <div class="mb-3 row">
+                      <label for="incType" class="col-sm-3 col-form-label myHeaderClass">Тип инцидента:</label>
+                      <div class="col-sm-9">
+                        <input type="text" readonly class="form-control-plaintext" id="incType" value="{{$type}}">
+                      </div>
+                    </div>
+
                     <div class="mb-3 row">
                         <label for="incHeader" class="col-sm-3 col-form-label myHeaderClass">Заголовок:</label>
                         <div class="col-sm-9">
