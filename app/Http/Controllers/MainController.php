@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\comments;
 use App\Models\incident;
 use App\Models\incident_groups_user;
-use App\Models\incidentModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,14 +14,64 @@ class MainController extends Controller
 
         $data = new incident();
         //return view('main',['data' => $data->all()]);
+        $choice="0";
         $id = Auth::id();
         //dump($id);
         return view('main',[
-            'data' => $data->select('incidents.*')->join('incident_groups_users', 'group_view', '=', 'incident_group_id')->where('user_id', (int)$id)->get()
+            'data' => $data->select('incidents.*')->join('incident_groups_users', 'group_view', '=', 'incident_group_id')->where('user_id', (int)$id)->orderBy('id', 'desc')->paginate(10), 'choice'=>$choice
         ]);
     }
 
+    public function search(Request $request) {
+        $s = $request->s;
+        $choice = $request->choice;
+        $id = Auth::id();
+        $data = new incident();
+        //dd($choice);
+        if ($s != null)
+        {
+            switch($choice) {
+                case(0):
+                    return view('main',[
+                        'data' => $data->select('incidents.*')->join('incident_groups_users', 'group_view', '=', 'incident_group_id')->where('user_id', (int)$id)->where('incidents.id', 'LIKE', "%{$s}%")->orderBy('id', 'desc')->paginate(10), 's'=>$s, 'choice'=>$choice
+                    ]);     
+                case(1):
+                    return view('main',[
+                        'data' => $data->select('incidents.*')
+                        ->where('incidents.id', 'LIKE', "%{$s}%")->where ('incidents.user', '=', $id)
+                        ->orderBy('incidents.id', 'desc')->paginate(10), 's'=>$s, 'choice'=>$choice
+                    ]);     
+                    break;
+                case(2): return view('main',['data' => $data->select('incidents.*')->where('incidents.id', 'LIKE', "%{$s}%")->orderBy('incidents.id', 'desc')->paginate(10), 's'=>$s, 'choice'=>$choice]); break;
+                default: return view('main',['data' => $data->select('incidents.*')->where('incidents.id', 'LIKE', "%{$s}%")->orderBy('incidents.id', 'desc')->paginate(10), 's'=>$s, 'choice'=>$choice]);
+            }
+        }
+        else 
+        {
+            switch($choice) {
+                case(0):
+                    return view('main',[
+                        'data' => $data->select('incidents.*')->join('incident_groups_users', 'group_view', '=', 'incident_group_id')->where('user_id', (int)$id)->orderBy('id', 'desc')->paginate(10), 's'=>$s, 'choice'=>$choice
+                    ]);
+                    break;
+     
+                case(1):
+                    return view('main',[
+                        'data' => $data->select('incidents.*')->where ('incidents.user', '=', $id)
+                        ->orderBy('incidents.id', 'desc')->paginate(10), 's'=>$s, 'choice'=>$choice
+                    ]);     
+                    break;
+                case(2): return view('main',['data' => $data->select('incidents.*')->orderBy('incidents.id', 'desc')->paginate(10), 's'=>$s, 'choice'=>$choice]); break;
+                default: return view('main',['data' => $data->select('incidents.*')->orderBy('incidents.id', 'desc')->paginate(10), 's'=>$s, 'choice'=>$choice]);
+            }
+                
+        }
+
+    }
+
     public function addIncident(Request $request) {
+        $id = Auth::id();
+        //dd($id);
         $incident = new incident();
         $incident->header = $request->input('header');
         $incident->type = $request->input('type');
@@ -32,6 +81,7 @@ class MainController extends Controller
         $incident->status = 1;
         $incident->updated_at = date('d-m-Y, H:i:s',time());
         $incident->created_at = date('d-m-Y, H:i:s',time());
+        $incident->created_by = $id;
         $incident->save();
         echo "<script>window.location.replace('/');</script>";
     }
@@ -49,6 +99,21 @@ class MainController extends Controller
             $upd
         );
         echo "<script>window.location.replace('/');</script>";
+    }
+
+    public function editInCard(Request $request) {
+        $incident = new incident();
+        $upd = [
+            'header' => $request->input('header'),
+            'description' => $request->input('description'),
+            'solution' => $request->input('solution')
+        ];
+        $incident->where('id', '=' , $request->input('record_id'))->update(
+            $upd
+        );
+        //return view('card',['incident' => 'Карточка инцидента']);
+        echo "<script>window.alert('Успешно сохранено');</script>";
+        echo "<script>window.location.replace('/card?id=$request->record_id');</script>";
     }
 
     public function showCard(Request $request) {

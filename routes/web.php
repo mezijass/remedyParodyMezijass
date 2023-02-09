@@ -15,8 +15,10 @@ use App\Http\Controllers\MainController as MainController;
 */
 
 Route::get('/', [MainController::class, 'main'])->name('main');
+Route::get('/search', [MainController::class, 'search'])->name('search');
 Route::get('/add', [MainController::class, 'addIncident']);
 Route::get('/edit', [MainController::class, 'editIncident']);
+Route::get('/editInCard', [MainController::class, 'editInCard']);
 Route::get('/card', [MainController::class, 'showCard']);
 Route::get('/addMessage', [MainController::class, 'addMessage']);
 Route::get('/change_status', [MainController::class, 'change_status']);
