@@ -9,6 +9,7 @@
     <!-- Обязательные метатеги -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="../../css/style.css" rel="stylesheet">
@@ -56,19 +57,34 @@
 
                 @if(Auth::check())
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ route('main') }}">Главная</a>
+                        <!-- Button переход на Главную -->
+                        <div class="container">
+                        <a style="width: 150px; height: 60px;" class="btn btn-primary " href="{{ route('main') }}">Главная страница</a>
+                        </div>
                     </li>
                     <li class="nav-item">
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                            Создать новый инцидент
-                        </button>
+                        <div class="container">
+                        <button style="width: 150px; height: 60px;" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Создать новый инцидент</button>
+                        </div>
                     </li>
                     <li class="nav-item">
-                        <!-- Button trigger modal -->
-                        <a  class="btn btn-primary" style="margin-left: 7px;" href="/user_groups">
-                            Редактировать команды
-                        </a>
+                        <!-- Button переход на user_groups -->
+                        <div class="container">
+                        <a style="width: 150px; height: 60px;" class="btn btn-success" href="/user_groups">Редактировать команды</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <!-- Button переход на users -->
+                        <div class="container">
+                        <a style="width: 150px; height: 60px;" class="btn btn-danger" href="/users">Справочник сотрудников</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <!-- Button переход на stats -->
+                        <div class="container">
+                        <a style="width: 150px; height: 60px;" class="btn btn-info" href="/stats">Отчеты и статистика</a>
+                        </div>
                     </li>
                     
             </ul>
@@ -79,11 +95,13 @@
                     {{Auth::user()->name}}
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                    <li><a class="dropdown-item" href="{{ url('/logout') }}"
-                           onclick="event.preventDefault();
-      document.getElementById('logout-form').submit();">
+                    <li>
+                        <a class="dropdown-item" href="{{ url('/logout') }}"
+                            onclick="event.preventDefault();
+                            document.getElementById('logout-form').submit();">
                             Выйти из системы
-                        </a></li>
+                        </a>
+                    </li>
                 </ul>
             </li>
                 @endif
@@ -122,28 +140,54 @@
                     <br>
                     <label class="form-label" for="type">Тип</label>
                     <select id="type" name="type" class="form-control" required>
-                        <option value="Массовый">Массовый</option>
                         <option value="Единичный">Единичный</option>
+                        <option value="Массовый">Массовый</option>
                     </select>
                     <br>
                     <label class="form-label" for="type">Назначить команде</label>
-                    <select id="group_view" name="group_view" class="form-control" required>
-                        @foreach($data_types as $d)
-                            <option value="{{$d->id}}">{{$d->name}}</option>
-                        @endforeach
 
-                    </select>
-                    <br>
-                    <label class="form-label" for="type">Назначить пользователю</label>
-                    <select id="group_view" name="user_inc" class="form-control" required>
-                    @foreach(\App\Models\User::all() as $user)
-                            <option value="{{$user->id}}">{{$user->name}}</option>
+                    <select class="form-select" name="group_view_selector_create" required>
+                      
+                        <option hidden>Назначить команде</option> 
+                        
+                        @foreach(\App\Models\incident_groups::all() as $catcreate) 
+                        <option value="{{$catcreate->id}}">{{$catcreate->name}}</option> 
                         @endforeach
-
-                    </select>
+                      
+                      </select>
+                      <br>
+                      
+                      @foreach(\App\Models\incident_groups::all() as $cat2create)
+                       
+                        @if(@count(DB::table('incident_groups_users')->select('user_id', 'incident_group_id')->where('incident_group_id','=',$cat2create->id)->get()) > 0)
+                        <!--<p style="text-align: center">Список сотрудников, которые входят в команду {{$cat2create->name}}:</p>-->
+                          <select style='display: none;' class="form-select myselectclasscreate" name="usercreate" data-group-create="{{$cat2create->id}}" required>
+                            
+                            <option hidden>Назначить пользователю</option> 
+                            
+                            @foreach(DB::table('incident_groups_users')->select('user_id', 'incident_group_id')->where('incident_group_id','=',$cat2create->id)->get(); as $useridcreate) 
+                            <option value="{{$useridcreate->user_id}}">{{\App\Models\User::find($useridcreate->user_id)->name}}</option> 
+                            @endforeach
+                          
+                          </select>
+                        @endif
+                      @endforeach
                     <br>
+                    
                     <label class="form-label" for="group_view">Описание инцидента</label>
                     <textarea id="description" class="form-control" name="description" required></textarea>
+                    <br>
+                    <select class="form-select" name="priority_selector_create" required>
+                      
+                        <option hidden>Приоритет инцидента</option> 
+                        
+                        @foreach(\App\Models\priority::all() as $priorityall) 
+                        <option value="{{$priorityall->id}}">{{$priorityall->name}}</option> 
+                        @endforeach
+                      
+                      </select>
+                      
+
                 </form>
             </div>
             <div class="modal-footer">
@@ -154,6 +198,22 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function(){
+      $('select[name=group_view_selector_create]').on("change", function(){
+        let val = $(this).find("option:selected").val();
+
+        //Скрываем все селекты
+        $('select.myselectclasscreate[data-group-create]').prop("disabled", true).hide();
+        
+        //Ищем только нужный
+        let s = $(`select.myselectclasscreate[data-group-create=${val}]`);
+
+        //Показываем
+        s.prop("disabled", false).show();
+      });
+    });
+</script>
 
 @yield('main-content')
 
@@ -161,3 +221,4 @@
 <!-- Дополнительный JavaScript -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+

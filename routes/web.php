@@ -16,6 +16,8 @@ use App\Http\Controllers\MainController as MainController;
 
 Route::get('/', [MainController::class, 'main'])->name('main');
 Route::get('/search', [MainController::class, 'search'])->name('search');
+Route::get('/statsearch', [MainController::class, 'statsearch'])->name('statsearch');
+Route::get('/searchuser', [MainController::class, 'searchuser'])->name('searchuser');
 Route::get('/add', [MainController::class, 'addIncident']);
 Route::get('/edit', [MainController::class, 'editIncident']);
 Route::get('/editInCard', [MainController::class, 'editInCard']);
@@ -24,11 +26,10 @@ Route::get('/addMessage', [MainController::class, 'addMessage']);
 Route::get('/change_status', [MainController::class, 'change_status']);
 Route::get('/change_user', [MainController::class, 'change_user']);
 Route::get('/user_groups', [MainController::class, 'user_groups']);
+Route::get('/users', [MainController::class, 'users']);
+Route::get('/stats', [MainController::class, 'stats']);
 Route::get('/check_categories', [MainController::class, 'check_categories']);
-
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
-
 require __DIR__.'/auth.php';

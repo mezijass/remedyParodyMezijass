@@ -6,9 +6,7 @@
 @endphp
 @extends('header')
 @section('main-content')
-
     @if(Auth::check())
-     
     <div class="container-fluid">
         <div class="row">
           <div class="col text-center mt-6">
@@ -74,7 +72,7 @@
               </tbody>
             </table>
           </div>
-          {{ $data->appends(['s'=>request()->s])->links() }}
+          {{ $data->appends(['choice'=>request()->choice,'s'=>request()->s])->links() }}
         </div>
       </div> @else <div class="container-fluid">
         <div class="row">
@@ -84,10 +82,5 @@
           </div>
         </div>
       </div> 
-
 @endif
-
-
-
-
 @endsection
